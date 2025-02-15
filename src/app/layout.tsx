@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Zwierzu's messenger",
+  title: "Zwierzu's Messenger",
   description: "Started 7/2/2025",
 };
 

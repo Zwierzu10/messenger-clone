@@ -65,14 +65,14 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
     }, [inputValue, users]);
 
     return ( 
-        <div className="SIDEBAR-DIV w-1/5 min-w-40 h-screen bg-gray-200 text-white p-1 flex flex-col justify-start items-start"> 
+        <div className="SIDEBAR-DIV w-1/5 min-w-40 h-screen bg-gray-200 text-white p-1 flex flex-col justify-start items-start border-r-2 border-gray-300"> 
             <div className={`w-full h-[10%] flex ${isFocused ? "justify-evenly" : "justify-center"} items-center`}>
                 {isFocused && (
                     <button onClick={() => { setInputValue(""); setIsFocused(false); }}>
                         <ArrowLeft size={32} className="text-black hover:bg-gray-300 bg-transparent rounded-full transition-all duration-300"/>
                     </button>
                 )}
-                <div className={`INPUT-DIV w-[90%] max-w-[20rem] h-1/2 bg-gray-100 flex rounded-2xl`}>
+                <div className={`INPUT-DIV w-[90%] max-w-[20rem] h-1/2 bg-gray-100 flex rounded-full`}>
                     <input 
                         type="text" 
                         className="bg-transparent h-full w-[80%] text-black placeholder:text-black p-3" 
@@ -91,7 +91,15 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
                 <div className="USERS-LIST-SEARCH w-full h-[80%] overflow-y-auto flex flex-col justify-start items-start">
                     {filteredUsers.length > 0 ? (
                         filteredUsers.map(user => (
-                            <button key={user.id} className="p-2 hover:bg-gray-300 text-black cursor-pointer w-full flex justify-start items-center" onClick={() => setSelectedUser(user)}>
+                        <button
+                        key={user.id}
+                        className="p-2 hover:bg-gray-300 text-black cursor-pointer w-full flex justify-start items-center"
+                        onClick={() => {
+                            setSelectedUser(user);
+                            setIsFocused(false);
+                            setInputValue("");
+                        }}
+                        >                                
                                 {user.name} {user.surname}
                             </button>
                         ))

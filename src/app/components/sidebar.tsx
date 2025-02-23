@@ -13,14 +13,17 @@ interface User {
 
 interface SideBarProps {
   setSelectedUser: (user: User | null) => void;
+  userHistory: User[];
+  selectedUser: User | null;
 }
 
 
-const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
+const SideBar: React.FC<SideBarProps> = ({ setSelectedUser, userHistory,selectedUser }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [users, setUsers] = useState<User[]>([]);
     const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -64,6 +67,10 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
         setFilteredUsers(results);
     }, [inputValue, users]);
 
+
+    
+
+
     return ( 
         <div className="SIDEBAR-DIV w-1/5 min-w-40 h-screen bg-gray-200 text-white p-1 flex flex-col justify-start items-start border-r-2 border-gray-300"> 
             <div className={`w-full h-[10%] flex ${isFocused ? "justify-evenly" : "justify-center"} items-center`}>
@@ -93,7 +100,7 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
                         filteredUsers.map(user => (
                         <button
                         key={user.id}
-                        className="p-2 hover:bg-gray-300 text-black cursor-pointer w-full flex justify-start items-center"
+                        className={`p-2 hover:bg-gray-300 text-black cursor-pointer w-full flex justify-start items-center`}
                         onClick={() => {
                             setSelectedUser(user);
                             setIsFocused(false);
@@ -109,7 +116,15 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser }) => {
                 </div>
             ) : (
                 <div className="USERS-HISTORY w-full h-[80%]">
-
+                    {userHistory.map(user=> (
+                        <button 
+                            key={user.id}
+                            className={`p-2 hover:bg-gray-300 text-black cursor-pointer w-full flex justify-start items-center ${selectedUser?.id === user.id ? "bg-gray-300" : ""}`}
+                            onClick={() => setSelectedUser(user)}
+                        >
+                            {user.name} {user.surname}
+                        </button>
+                    ))}
                 </div>
             )}
 

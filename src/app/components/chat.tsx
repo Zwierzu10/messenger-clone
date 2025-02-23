@@ -1,5 +1,5 @@
 'use client';
-import { collection, query, addDoc, serverTimestamp, onSnapshot, orderBy, where } from "firebase/firestore";
+import { collection, query, addDoc, serverTimestamp, onSnapshot, orderBy, where, doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../firebaseConfig";
 import { Send } from "lucide-react";
 
@@ -14,6 +14,8 @@ interface UserType {
 
 interface SelectedUserProps {
   selectedUser: UserType | null;
+  setUserHistory: React.Dispatch<React.SetStateAction<UserType[]>>;
+  userHistory: UserType[];
 }
 
 interface Message {
@@ -24,7 +26,7 @@ interface Message {
   timestamp: any;
 }
 
-const Chat: React.FC<SelectedUserProps> = ({ selectedUser }) => {
+const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userHistory }) => {
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -77,6 +79,21 @@ const Chat: React.FC<SelectedUserProps> = ({ selectedUser }) => {
     });
 
     setInputValue("");
+
+
+    const userHistoryRef = doc(firestore, `userHistory/${currentUserId}/history/${selectedUser.id}`);
+
+    await setDoc(userHistoryRef, {
+      id: selectedUser.id,
+      name: selectedUser.name,
+      surname: selectedUser.surname || "",
+      lastInteraction: serverTimestamp(),
+    });
+  
+    setUserHistory(prevHistory => {
+      const filteredHistory = prevHistory.filter(u => u.id !== selectedUser.id);
+      return [{ ...selectedUser }, ...filteredHistory];
+    });
   };
 
   return (

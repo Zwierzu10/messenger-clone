@@ -70,34 +70,42 @@ const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userH
 
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!user || !selectedUser || inputValue.trim() === "") return;
+const sendMessage = async () => {
+  if (!user || !selectedUser || inputValue.trim() === "") return;
 
-    await addDoc(collection(firestore, "messages"), {
-      senderId: user.id,
-      receiverId: selectedUser.id,
-      senderReceiverPair: `${user.id}_${selectedUser.id}`,
-      text: inputValue,
-      timestamp: serverTimestamp(),
-    });
-
-    setInputValue("");
-
-
-    const userHistoryRef = doc(firestore, `userHistory/${currentUserId}/history/${selectedUser.id}`);
-
-    await setDoc(userHistoryRef, {
-      id: selectedUser.id,
-      name: selectedUser.name,
-      surname: selectedUser.surname || "",
-      lastInteraction: serverTimestamp(),
-    });
-  
-    setUserHistory(prevHistory => {
-      const filteredHistory = prevHistory.filter(u => u.id !== selectedUser.id);
-      return [{ ...selectedUser }, ...filteredHistory];
-    });
+  const messageData = {
+    senderId: user.id,
+    receiverId: selectedUser.id,
+    senderReceiverPair: `${user.id}_${selectedUser.id}`,
+    text: inputValue,
+    timestamp: serverTimestamp(),
   };
+
+  await addDoc(collection(firestore, "messages"), messageData);
+  setInputValue("");
+
+  const senderHistoryRef = doc(firestore, `userHistory/${currentUserId}/history/${selectedUser.id}`);
+  await setDoc(senderHistoryRef, {
+    id: selectedUser.id,
+    name: selectedUser.name,
+    surname: selectedUser.surname || "",
+    lastInteraction: serverTimestamp(),
+  });
+
+  const receiverHistoryRef = doc(firestore, `userHistory/${selectedUser.id}/history/${currentUserId}`);
+  await setDoc(receiverHistoryRef, {
+    id: currentUserId,
+    name: user.firstName || user.username || "Unknown",
+    surname: user.lastName || "",
+    lastInteraction: serverTimestamp(),
+  });
+
+  setUserHistory(prevHistory => {
+    const filteredHistory = prevHistory.filter(u => u.id !== selectedUser.id);
+    return [{ ...selectedUser }, ...filteredHistory];
+  });
+};
+
 
   return (
     <div className="CHAT-DIV w-4/5 h-screen bg-gray-100">

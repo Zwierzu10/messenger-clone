@@ -34,18 +34,24 @@ export default function Home() {
           surname: data.surname,
         } as User;
       });
-      
+
       SetUserHistory(history);
     });
 
     return () => unsubscribe();
   }, [currentUserId]);
 
+  useEffect(() => {
+    if (UserHistory.length > 0 && !SelectedUser) {
+      SetSelectedUser(UserHistory[0]);
+    }
+  }, [UserHistory, SelectedUser]);
+
   return (
     <div className="HOME-DIV w-screen h-screen flex justify-start items-center">
       <UserSync/>
       <SideBar setSelectedUser={SetSelectedUser} userHistory={UserHistory} selectedUser={SelectedUser}/>
-      <Chat selectedUser={SelectedUser} setUserHistory={SetUserHistory} userHistory={UserHistory}/>
+      <Chat selectedUser={SelectedUser} setUserHistory={SetUserHistory} userHistory={UserHistory} setSelectedUser={SetSelectedUser}/>
     </div>
   );
 }

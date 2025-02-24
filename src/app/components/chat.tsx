@@ -16,6 +16,7 @@ interface SelectedUserProps {
   selectedUser: UserType | null;
   setUserHistory: React.Dispatch<React.SetStateAction<UserType[]>>;
   userHistory: UserType[];
+  setSelectedUser: (user: UserType | null) => void;
 }
 
 interface Message {
@@ -26,7 +27,7 @@ interface Message {
   timestamp: any;
 }
 
-const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userHistory }) => {
+const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userHistory, setSelectedUser }) => {
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -34,6 +35,8 @@ const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userH
   
   const { user } = useUser();
   const currentUserId = user?.id;
+
+
 
   useEffect(() => {
     if (!selectedUser) {
@@ -147,9 +150,9 @@ const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userH
           </div>
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center w-full h-full">
           <h1 className="text-4xl text-black">
-            zrobic zeby ostatni chat sie otworzyl
+            Start a conversation by selecting a user.
           </h1>
         </div>
       )}

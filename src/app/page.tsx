@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { firestore } from "../firebaseConfig";
 import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { useMediaQuery } from "react-responsive";
 
 interface User {
   id: string;
@@ -14,6 +15,8 @@ interface User {
 }
 
 export default function Home() {
+  const IsMobile = useMediaQuery({ query: "(max-width: 1079px)" });
+
   const [SelectedUser, SetSelectedUser] = useState<User | null>(null);
   const [UserHistory, SetUserHistory] = useState<User[]>([]);
   const { user } = useUser();
@@ -41,17 +44,47 @@ export default function Home() {
     return () => unsubscribe();
   }, [currentUserId]);
 
-  useEffect(() => {
-    if (UserHistory.length > 0 && !SelectedUser) {
-      SetSelectedUser(UserHistory[0]);
-    }
-  }, [UserHistory, SelectedUser]);
 
   return (
-    <div className="HOME-DIV w-screen h-screen flex justify-start items-center">
-      <UserSync/>
-      <SideBar setSelectedUser={SetSelectedUser} userHistory={UserHistory} selectedUser={SelectedUser}/>
-      <Chat selectedUser={SelectedUser} setUserHistory={SetUserHistory} userHistory={UserHistory} setSelectedUser={SetSelectedUser}/>
-    </div>
+    <>
+      {IsMobile ? (
+        <div className="HOME-DIV-MOBILE w-screen h-screen flex justify-start items-center">
+          <UserSync/>
+          {SelectedUser ? (
+            <Chat 
+              selectedUser={SelectedUser} 
+              setUserHistory={SetUserHistory} 
+              userHistory={UserHistory} 
+              setSelectedUser={SetSelectedUser} 
+              isMobile={IsMobile}
+            />
+          ) : (
+            <SideBar 
+              setSelectedUser={SetSelectedUser} 
+              userHistory={UserHistory} 
+              selectedUser={SelectedUser} 
+              isMobile={IsMobile}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="HOME-DIV-PC w-screen h-screen flex justify-start items-center">
+          <UserSync />
+          <SideBar 
+            setSelectedUser={SetSelectedUser} 
+            userHistory={UserHistory} 
+            selectedUser={SelectedUser} 
+            isMobile={IsMobile}
+          />
+          <Chat 
+            selectedUser={SelectedUser} 
+            setUserHistory={SetUserHistory} 
+            userHistory={UserHistory} 
+            setSelectedUser={SetSelectedUser} 
+            isMobile={IsMobile}
+          />
+        </div>
+      )}
+    </>
   );
 }

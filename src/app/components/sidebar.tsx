@@ -15,10 +15,11 @@ interface SideBarProps {
   setSelectedUser: (user: User | null) => void;
   userHistory: User[];
   selectedUser: User | null;
+  isMobile: boolean;
 }
 
 
-const SideBar: React.FC<SideBarProps> = ({ setSelectedUser, userHistory,selectedUser }) => {
+const SideBar: React.FC<SideBarProps> = ({ setSelectedUser, userHistory,selectedUser, isMobile }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [users, setUsers] = useState<User[]>([]);
@@ -72,7 +73,7 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser, userHistory,selected
 
 
     return ( 
-        <div className="SIDEBAR-DIV w-1/5 min-w-40 h-screen bg-gray-200 text-white p-1 flex flex-col justify-start items-start border-r-2 border-gray-300"> 
+        <div className={`SIDEBAR-DIV ${isMobile && !selectedUser ? "w-full" : "w-1/5"} w-1/5 min-w-40 h-screen bg-gray-200 text-white p-1 flex flex-col justify-start items-start border-r-2 border-gray-300`}> 
             <div className={`w-full h-[10%] flex ${isFocused ? "justify-evenly" : "justify-center"} items-center`}>
                 {isFocused && (
                     <button onClick={() => { setInputValue(""); setIsFocused(false); }}>

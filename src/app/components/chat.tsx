@@ -1,7 +1,7 @@
 'use client';
 import { collection, query, addDoc, serverTimestamp, onSnapshot, orderBy, where, doc, setDoc } from "firebase/firestore";
 import { firestore } from "../../firebaseConfig";
-import { Send } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 
 import { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -17,6 +17,7 @@ interface SelectedUserProps {
   setUserHistory: React.Dispatch<React.SetStateAction<UserType[]>>;
   userHistory: UserType[];
   setSelectedUser: (user: UserType | null) => void;
+  isMobile: boolean;
 }
 
 interface Message {
@@ -27,7 +28,7 @@ interface Message {
   timestamp: any;
 }
 
-const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userHistory, setSelectedUser }) => {
+const Chat: React.FC<SelectedUserProps> = ({ selectedUser, setUserHistory, userHistory, setSelectedUser, isMobile }) => {
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -108,10 +109,17 @@ const sendMessage = async () => {
 
 
   return (
-    <div className="CHAT-DIV w-4/5 h-screen bg-gray-100">
+    <div className={`CHAT-DIV ${selectedUser && isMobile ? "w-full" : "w-4/5" } w-4/5 h-screen bg-gray-100`}>
       {selectedUser ? (
         <div className="SELECTED-CHAT w-full h-full flex flex-col justify-start items-start">
           <div className="w-full h-[10%] bg-gray-200 flex justify-start items-center border-b-2 border-gray-300">
+            {isMobile ? (
+              <ArrowLeft size={32} className="text-black cursor-pointer ml-[5%]" onClick={()=>setSelectedUser(null)}/>
+
+            ):(
+              <></>
+            )}
+
             <h1 className="text-4xl text-black ml-[5%]">
               {selectedUser.name} {selectedUser.surname}
             </h1>

@@ -150,6 +150,7 @@ const sendMessage = async () => {
             <div className="w-full h-[10%] bg-transparent flex justify-start items-center p-4">
               <input
                 type="text"
+                autoComplete="off"
                 className="w-4/5 h-full rounded-full text-black placeholder:text-black p-3"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}

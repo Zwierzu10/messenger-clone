@@ -83,6 +83,7 @@ const SideBar: React.FC<SideBarProps> = ({ setSelectedUser, userHistory,selected
                 <div className={`INPUT-DIV w-[90%] max-w-[20rem] h-1/2 bg-gray-100 flex rounded-full`}>
                     <input 
                         type="text" 
+                        autoComplete="off"
                         className="bg-transparent h-full w-[80%] text-black placeholder:text-black p-3" 
                         placeholder="Search users..." 
                         value={inputValue} 

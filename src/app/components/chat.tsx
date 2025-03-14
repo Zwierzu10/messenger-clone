@@ -160,9 +160,13 @@ const sendMessage = async () => {
                   }
                 }}
               />
-              <button className="w-[5%] flex justify-center items-center rotate-45" onClick={sendMessage}>
-                <Send size={32} className="text-black" />
-              </button>
+              {isMobile ? (
+              <button className="w-[20%] ml-[5%] flex justify-center items-center bg-blue-500 p-1 rounded-lg text-white" onClick={sendMessage}>Send</button>                
+              ) : (
+                <button className="w-[5%] flex justify-center items-center rotate-45" onClick={sendMessage}>
+                  <Send size={32} className="text-black" />
+                </button>
+              )}
             </div>
           </div>
         </div>
